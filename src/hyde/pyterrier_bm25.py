@@ -26,22 +26,26 @@ if not pt.started():
 
 from ir_measures import Recall
 
-from hyde.config import (
-    BATCH_SIZE,
-    HEAD_SIZE,
-    STA_MODEL_NAME,
-    booksfile,
-    postsfile,
-    qrelsfile,
-    sta_index_path,
-    sta_metricspath,
-    sta_resultspath,
-)
-from hyde.load_data import (
-    load_books_from_csv,
-    load_posts_from_csv,
-    load_qrels_from_csv,
-)
+# safe import
+try:
+    from hyde.config import (
+        BATCH_SIZE,
+        HEAD_SIZE,
+        STA_MODEL_NAME,
+        booksfile,
+        postsfile,
+        qrelsfile,
+        sta_index_path,
+        sta_metricspath,
+        sta_resultspath,
+    )
+    from hyde.load_data import (
+        load_books_from_csv,
+        load_posts_from_csv,
+        load_qrels_from_csv,
+    )
+except ImportError:
+    pass
 
 # load data
 books = load_books_from_csv(booksfile)

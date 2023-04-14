@@ -27,22 +27,27 @@ if not pt.started():
 
 from ir_measures import Recall
 
-from hyde.config import (
-    BATCH_SIZE,
-    HEAD_SIZE,
-    NEU_MODEL_NAME,
-    booksfile,
-    neu_index_path,
-    neu_metricspath,
-    neu_resultspath,
-    postsfile,
-    qrelsfile,
-)
-from hyde.load_data import (
-    load_books_from_csv,
-    load_posts_from_csv,
-    load_qrels_from_csv,
-)
+# safe import
+try:
+    from hyde.config import (
+        BATCH_SIZE,
+        HEAD_SIZE,
+        NEU_MODEL_NAME,
+        booksfile,
+        neu_index_path,
+        neu_metricspath,
+        neu_resultspath,
+        postsfile,
+        qrelsfile,
+    )
+    from hyde.load_data import (
+        load_books_from_csv,
+        load_posts_from_csv,
+        load_qrels_from_csv,
+    )
+except ImportError:
+    pass
+
 from pyterrier_sentence_transformers import (
     SentenceTransformersIndexer,
     SentenceTransformersRetriever,
