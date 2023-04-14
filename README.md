@@ -19,6 +19,19 @@ conda install -c pytorch faiss-gpu cudatoolkit=11.3
 
 If you need to install faiss from scratch, see [instructions here][1].
 
+## Experiments
+
+
+```
+cd /net/nfs2.s2-research/kylel/whatsthatbook/data/
+
+aws s3 cp s3://whatsthatbook-emnlp-2022/2022-05-30_14441_gold_posts.jsonl .
+aws s3 cp s3://whatsthatbook-emnlp-2022/2022-05-30_14441_chatgpt_preds_2023-03.jsonl .
+
+aws s3 cp s3://whatsthatbook-emnlp-2022/2022-05-30_14441_gold_books.jsonl .
+aws s3 cp s3://whatsthatbook-emnlp-2022/2022-05-30_ours_books_chatgpt_2023-03.jsonl .
+```
+
 
 ## Running
 
