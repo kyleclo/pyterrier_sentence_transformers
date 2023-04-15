@@ -9,6 +9,7 @@ Neural IR with Sentence Transformers
 import json
 import logging
 import os
+from shutil import rmtree
 
 import pandas as pd
 from tqdm import tqdm
@@ -29,25 +30,19 @@ from ir_measures import Recall
 
 # safe import
 try:
-    from hyde.config import (
+    from hyde.basic_config import (
         BATCH_SIZE,
         HEAD_SIZE,
         NEU_MODEL_NAME,
-        booksfile,
         neu_index_path,
         neu_metricspath,
         neu_resultspath,
-        postsfile,
-        qrelsfile,
+        raw_bookspath,
+        raw_postspath,
     )
-    from hyde.load_data import (
-        load_books_from_csv,
-        load_posts_from_csv,
-        load_qrels_from_csv,
-    )
+    from hyde.load_data.load_data_ours import load_books, load_posts_and_qrels
 except ImportError:
     pass
-
 from pyterrier_sentence_transformers import (
     SentenceTransformersIndexer,
     SentenceTransformersRetriever,
@@ -59,9 +54,8 @@ print(torch.cuda.current_device())
 
 
 # load data
-books = load_books_from_csv(booksfile)
-posts = load_posts_from_csv(postsfile)
-qrels = load_qrels_from_csv(qrelsfile)
+books = load_books(booksfile=raw_bookspath)
+posts, qrels = load_posts_and_qrels(postsfile=raw_postspath)
 
 
 # build neu index
@@ -73,6 +67,7 @@ NEU_indexer = SentenceTransformersIndexer(
     text_attr=["text"],
 )
 NEU_indexer.index(books)
+
 
 # define retriever
 NEU_br = SentenceTransformersRetriever(
@@ -107,3 +102,6 @@ results.to_csv(neu_resultspath, index=False)
 # save metrics
 with open(neu_metricspath, "w") as f:
     json.dump(metrics, f, indent=4)
+
+# clean up
+rmtree(neu_index_path)

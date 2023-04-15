@@ -9,6 +9,7 @@ BM25 retrieval
 import json
 import logging
 import os
+from shutil import rmtree
 
 import pandas as pd
 from tqdm import tqdm
@@ -28,32 +29,36 @@ from ir_measures import Recall
 
 # safe import
 try:
-    from hyde.config import (
+    from hyde.basic_config import (
         BATCH_SIZE,
         HEAD_SIZE,
         STA_MODEL_NAME,
-        booksfile,
-        postsfile,
-        qrelsfile,
+        raw_bookspath,
+        raw_postspath,
         sta_index_path,
         sta_metricspath,
         sta_resultspath,
     )
-    from hyde.load_data import (
-        load_books_from_csv,
-        load_posts_from_csv,
-        load_qrels_from_csv,
+
+    # from hyde.load_data.load_data_ours import load_books, load_posts_and_qrels
+    from hyde.load_data.load_data_ours_fake_books import (
+        load_books,
+        load_posts_and_qrels,
     )
 except ImportError:
     pass
 
 # load data
-books = load_books_from_csv(booksfile)
-posts = load_posts_from_csv(postsfile)
-qrels = load_qrels_from_csv(qrelsfile)
+books = load_books(booksfile=raw_bookspath)
+posts, qrels = load_posts_and_qrels(postsfile=raw_postspath)
 
 # build sta index
-STA_indexer = pt.DFIndexer(sta_index_path)
+STA_indexer = pt.DFIndexer(
+    sta_index_path,
+    overwrite=True,
+    normalize=False,
+    text_attr=["text"],
+)
 STA_indexer.index(books["text"], books["docno"])
 
 # define retriever
@@ -85,3 +90,6 @@ results.to_csv(sta_resultspath, index=False)
 # save metrics
 with open(sta_metricspath, "w") as f:
     json.dump(metrics, f, indent=4)
+
+# index cleanup
+rmtree(sta_index_path)
