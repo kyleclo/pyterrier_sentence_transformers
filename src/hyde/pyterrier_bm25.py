@@ -39,18 +39,23 @@ try:
         sta_metricspath,
         sta_resultspath,
     )
+    from hyde.configs.fake_posts_config import (
+        NUM_GPT3_GENS_TO_USE,
+        NUM_RETRIEVED_PER_GEN,
+        fake_postspath
+    )
 
     # from hyde.load_data.load_data_ours import load_books, load_posts_and_qrels
-    from hyde.load_data.load_data_ours_fake_books import (
-        load_books,
-        load_posts_and_qrels,
-    )
+    # from hyde.load_data.load_data_ours_fake_books import load_books, load_posts_and_qrels
+    # from hyde.load_data.load_data_ours_fake_queries import load_books, load_posts_and_qrels, load_fake_posts
 except ImportError:
     pass
 
 # load data
 books = load_books(booksfile=raw_bookspath)
 posts, qrels = load_posts_and_qrels(postsfile=raw_postspath)
+if NUM_GPT3_GENS_TO_USE:
+    fake_posts = load_fake_posts(postsfile=fake_postspath)
 
 # build sta index
 STA_indexer = pt.DFIndexer(
